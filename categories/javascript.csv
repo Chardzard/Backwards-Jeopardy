@@ -1,0 +1,14 @@
+Javascript,This type of function is commonly known as: () => {},Arrow,200
+Javascript,Adding an element to the end of an array can be done with this method?,Push,100
+Javascript,JavaScript often interacts with this HTML API,DOM,600
+Javascript,Name this JavaScript runtime meant to execute outside of the browser,Node,400
+Javascript,Name this ES6 standard for accessing nested values const name = { name },Destructuring,800
+Javascript,This JavaScript concept enables asynchronous programming,Promises,400
+Javascript,This advanced JS technique allows for the use of private scope,Closures,2000
+Javascript,Name this JavaScript technique: fnX(1)(2)(3),Currying,1800
+Javascript,This operator allows a function to accept any number of arguments as an array,Rest,1600
+Javascript,This popular JavaScript framework was pioneered by Facebook,React,1000
+Javascript,This popular JavaScript framework is developed by Google,Angular,1200
+Javascript,This once popular variable declaration is considered bad practice,var,1400
+Javascript,This common JavaScript testing library asserts with expect,Jest,800
+Javascript,This JavaScript API is an interface for interacting with HTTP requests,Fetch,800

@@ -1,0 +1,133 @@
+template <class Type>
+void BinTree<Type>::add(Type dataIn){
+  // create new node for our data
+  BinNode<Type>* chair = new BinNode<Type>(dataIn);
+  if (isEmpty()){
+    root = chair; // first piece of data
+    return; // stop
+  }
+  BinNode<Type>* cursor = root; // pointer to go through the tree
+  while (cursor != nullptr){
+    if (dataIn <= cursor->data){ // LEFT SIDE
+      if (cursor->left == nullptr){ // NOT IN USE
+        cursor->left = chair; // ADDED NEW NODE TO TREE
+        cursor = nullptr; // RETURN
+      }
+      else{ // NOT AVAILABLE, MOVE DOWN BRANCH
+        cursor = cursor->left;
+      }
+    }
+    else{ // RIGHT SIDE
+      if (cursor->right == nullptr){ // NOT IN USE
+        cursor->right = chair; // ADDED NEW NODE TO TREE
+        cursor = nullptr; // RETURN
+      }
+      else{ // NOT AVAILABLE, MOVE DOWN BRANCH
+        cursor = cursor->right;
+      }
+    }
+  }
+}
+
+template <class Type>
+bool BinTree<Type>::writeFile(std::string fileName) const{
+  std::ofstream fileObj;
+  BinNode<Type>* ptr = root;
+  fileObj.open(fileName);
+  if (!fileObj){
+    std::cout << "Error opening file\n";
+    return false;
+  }
+  writeFile(fileObj, ptr);
+  fileObj.close();
+  return true;
+}
+
+template <class Type>
+void BinTree<Type>::writeFile(std::ofstream& ofs, BinNode<Type>* obj) const{
+  if (obj != nullptr){
+    ofs << obj->data;
+    writeFile(ofs, obj->left);
+    writeFile(ofs, obj->right);
+  }
+}
+
+template <class Type>
+void BinTree<Type>::free(BinNode<Type>* cursor){
+  if (cursor != nullptr){ // stopping case
+    // post-order
+    free(cursor->left);
+    free(cursor->right);
+    delete cursor;
+  }
+}
+
+template <class Type>
+bool BinTree<Type>::readFile(std::string fileName){
+  std::ifstream inFile_object;
+  inFile_object.open(fileName);
+  if (!inFile_object){
+    std::cout << "Error opening file\n";
+    return false;
+  }
+  Type data_to_read;
+  inFile_object >> data_to_read;
+  while (!inFile_object.eof()){
+    add(data_to_read);
+    inFile_object >> data_to_read;
+  }
+  inFile_object.close();
+  return true;
+}
+
+template <class Type>
+void BinTree<Type>::printElement(BinNode<Type>* cursor){
+  if (cursor != nullptr){
+    std::cout << cursor->data << std::endl;
+    printElement(cursor->left);
+    printElement(cursor->right);
+  }
+}
+
+template <class Type>
+void BinTree<Type>::inOrderTraversal(int count1, void process(Type , int , int& )){
+  int count2 = 0;
+  inOrder(root, count1, count2, process);
+}
+
+template <class Type>
+void BinTree<Type>::inOrder(BinNode<Type>* cursor, int count1, int& count2, void process(Type , int , int& )){
+  if (cursor != nullptr){
+    inOrder(cursor->left, count1, count2, process);
+    count2++;
+    process(cursor->data, count1, count2);
+    inOrder(cursor->right, count1, count2, process);
+  }
+}
+
+template <class Type>
+BinTree<Type>::BinTree(const BinTree<Type>& source){
+ 
+  root = nullptr;
+
+  copyTree(source.root);
+}
+
+template <class Type>
+BinTree<Type>& BinTree<Type>::operator=(const BinTree<Type>& source){
+  if (this != &source){
+    free(root);
+    root = nullptr;
+    copyTree(source.root);
+  }
+  return *this;
+}
+
+template <class Type>
+void BinTree<Type>::copyTree(BinNode<Type>* cursor){
+  if (cursor != nullptr){
+    add(cursor->data);
+    BinTree(cursor->left);
+    BinTree(cursor->right);
+  }
+}

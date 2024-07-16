@@ -1,0 +1,212 @@
+
+// Parke Lovett
+
+/* ### LinkList<T> Template Class Definition (linklist.template) Topic 6 & 7 */
+
+// DO NOT #include "linklist.h" - THIS IS A TEMPLATE
+
+  template <class T>
+  int LinkList<T>::getSize() const{
+    int counter = 0;
+    Node<T>* curNode = first;
+    while (curNode != nullptr){
+      counter++;
+      curNode = curNode->next;
+    }
+    return counter;
+  }
+
+  template <class T>
+  bool LinkList<T>::isEmpty() const{
+    return first == nullptr;
+  }
+
+  template <class T>
+  T LinkList<T>::at(int counter) const{
+    Node<T>* curNode = first;
+    int count = 1;
+    while (curNode != nullptr){
+      if (count == counter)
+        return curNode->data;
+      count++;
+      curNode = curNode->next;
+    }
+    return T();
+  }
+
+  template <class T>
+  T LinkList<T>::getRandomData() const{
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::minstd_rand0 generator(seed);
+    int rand_num = generator() % getSize() + (generator.min()); 
+    return at(rand_num);
+  }
+
+  template <class T>
+  bool LinkList<T>::writeFile(std::string fileName) const{
+    std::ofstream outFile_obj;
+    outFile_obj.open(fileName);
+    if (!outFile_obj){
+      std::cout << "Error opening file\n";
+      return false;
+    }
+    Node<T>* curNode = first;
+    while (curNode != nullptr){
+      outFile_obj << curNode->data;
+      curNode = curNode->next;
+  }
+    outFile_obj.close();
+    return true;
+}
+
+  template <class T>
+  Node<T>* LinkList<T>::findByData(T data) const{
+    Node<T>* curNode = first;
+    while (curNode != nullptr){
+      if (curNode->data == data){
+        return curNode;
+      }
+      curNode = curNode->next;
+    }
+      return nullptr;
+  }
+
+  template <class T>
+  void LinkList<T>::prepend(T data){
+    Node<T>* predNode = new Node<T>(data);
+    if (isEmpty()) {
+      first = predNode;
+      last = predNode;
+   }
+   else {
+      predNode->next = first;
+      this->first = predNode;
+   }
+  }
+
+  template <class T>
+  void LinkList<T>::append(T data){
+    Node<T>* sucNode = new Node<T>();
+    sucNode->data = data;
+    sucNode->next = nullptr;
+    if (first == nullptr){
+      first = last = sucNode;
+      return;
+    }
+    else{
+      last->next = sucNode;
+        last = sucNode;
+    }
+  }
+
+  template <class T>
+  void LinkList<T>::removeFirst(){
+    if (isEmpty()){
+      return;
+    }
+    Node<T>* tmp = first;
+    first = first->next;
+    if (getSize() == 1)
+      last = first->next;
+    delete tmp;
+  }
+
+  template <class T>
+  void LinkList<T>::removeByData(T data){
+    Node<T>* curNode = first;
+    if (isEmpty())
+      return;
+    if (curNode->data == data)
+      removeFirst();
+    while (curNode != nullptr){
+      curNode = curNode->next;
+      if (curNode == nullptr || curNode->next == nullptr)
+        return;
+    }
+      Node<T>* next = curNode->next->next;
+      delete curNode->next;
+      curNode->next = next;
+  }
+
+  template <class T>
+  void LinkList<T>::clearAll(){
+    Node<T>* curNode = first;
+    while (curNode != nullptr){
+      curNode = curNode->next;
+      delete curNode;
+    }
+  }
+
+  template <class T>
+  bool LinkList<T>::readFile(std::string fileName){
+    std::ifstream inFile_obj;
+    inFile_obj.open(fileName);
+    if (!inFile_obj){
+      std::cout << "Error opening file\n";
+      return false;
+    }
+    T data_to_read;
+    inFile_obj >> data_to_read;
+    while (!inFile_obj.eof()){ 
+      append(data_to_read);
+      inFile_obj >> data_to_read;
+  }
+    inFile_obj.close();
+    return true;
+}
+
+  template <class T>
+  LinkList<T>::~LinkList(){
+    Node<T>* curNode = first;
+    while (curNode != nullptr){
+      Node<T>* next = curNode->next;
+      delete curNode;
+      curNode = next;
+    }
+    first = last = nullptr;
+  }
+
+  template <class T>
+  LinkList<T>::LinkList(const LinkList<T>& source){
+    if (source.first != nullptr){
+      this->first = new Node<T>();
+      this->first->data = source.first->data;
+      Node<T>* tmp = source.first->next;
+      Node<T>* tmp2 = this->first;
+      while (tmp2 != nullptr){
+        Node<T>* new_node = new Node<T>();
+        new_node->data = tmp->data;
+        new_node->next = tmp->next;
+        tmp2->next = new_node;
+        tmp2 = tmp2->next;
+        tmp = tmp->next;
+      }
+    }
+    else{
+      first = nullptr;
+    }
+  }
+
+  template <class T>
+  LinkList<T>& LinkList<T>::operator=(const LinkList<T>& source){
+    if (this == &source)
+      return *this;
+    while (!isEmpty()){
+      delete first;
+    }
+   // size = source.getSize();
+    Node<T>* curNode = first;
+   for (Node<T>* i = source->first; i != nullptr; i = i->next){
+      append(i->data);   
+  }
+    return *this;
+  }
+
+  template <class T>
+  void LinkList<T>::printAll(){
+    Node<T>* ptr = first;
+    while (ptr != nullptr){
+      std::cout << ptr->data << std::endl;
+      ptr = ptr->next;
+    }
+  }
